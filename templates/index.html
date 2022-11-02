@@ -1,22 +1,26 @@
 <html>
-<head>
-<script type="text/javascript">
-	function httpGetAsync(theUrl, callback) {
-	    var xmlHttp = new XMLHttpRequest();
-	    xmlHttp.onreadystatechange = function() {
-	        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-	            callback(xmlHttp.responseText);
-	    }
-	    xmlHttp.open("GET", theUrl, true); // true for asynchronous
-	    xmlHttp.send(null);
-	}
-</script>
-</head>
-<body>
+	<head>
+		<script type="text/javascript">
+			const httpGetAsync = (theUrl, callback) => {
+				let xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function () {
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+						callback(xmlHttp.responseText);
+				}
+				xmlHttp.open("GET", theUrl, true); // true for asynchronous
+				xmlHttp.send(null);
+			}
 
-<div id="myElement">
-	Hello, world!
-</div>
+			httpGetAsync('http://127.0.0.1:5000/store/', function (responseText) {
+				alert(responseText)
+			})
+		</script>
+	</head>
+	<body>
 
-</body>
+		<div id="myElement">
+			Hello, world!
+		</div>
+
+	</body>
 </html>

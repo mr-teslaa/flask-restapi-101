@@ -1,81 +1,23 @@
+from re import A
 from flask import Flask
-from flask import jsonify
-from flask import request
+from flask_restful import Resource
+from flask_restful import Api
 
 app = Flask(__name__)
-
-# as we are server now our - 
-# POST = receive data
-# GET = send data
-
-stores = [
-    {
-        'name': 'a car store',
-        'items': [
-            {
-                'name': 'an item like tire',
-                'price': 399.55
-            }
-        ]
-    }
-]
+api = Api(app)
 
 
-# POST /store/ data: {name}   will receive a name
-@app.route('/store/', methods=['POST'])
-def create_store():
-    request_data = request.get_json()
-    new_store = {
-        "name": request_data['name'],
-        "items": []
-    }
+# RESOURCE is all about what you are providing through api
+# this is a resource, in our case our resources is STUDENTS
 
-    stores.append(new_store)
-    return jsonify(new_store)
+class Student(Resource):
+    def get(self, name):
+        return {"student": name}
 
-# GET /store/<string:name>
-@app.route('/store/<string:name>/')
-def get_store(name):
-    # if the store name matches then return that store
-    # othewise return an error message
-    for store in stores:
-        if store['name'] == name:
-            return jsonify(store)
-        
-    return jsonify({"message": "store not found"})
+# we don't need to define the route differently when we are using api
+# instead we should define that in this way, after the adding resouces we need to
+# tell the route
+api.add_resource(Student, '/student/<string:name>') # localhost/student/Jhon
 
 
-# GET /store/    show all store
-@app.route('/store/')
-def get_stores():
-    # in our case stores is a list, json can't be list. it must be object
-    # so we need convert this list into a python object and then jsoinfy that
-    return jsonify({"stores": stores})    
-
-
-# POST /store/<string:name>/item {name, price}
-@app.route('/store/<string:name>/item/', methods=['POST'])
-def create_items_store(name):
-    request_data = request.get_json()
-    for store in stores:
-        if store['name'] == name:
-            new_item = {
-                "name": request_data['name'],
-                "price": request_data['price']
-            }
-
-            store['items'].append(new_item)
-            return jsonify(new_item)
-    
-    return jsonify({"message": "store not found"})
-
-
-# GET /store/<string:name>/item
-@app.route('/store/<string:name>/item/')
-def get_items_store(name):
-    # same method as get_store() 
-    for store in stores:
-        if store['name'] == name:
-            return jsonify({"items": store['items']})
-        
-    return jsonify({"message": "store not found"})
+app.run()
